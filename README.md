@@ -1,4 +1,4 @@
-#🔱 Bataillon des Marins-Pompiers de Marseille
+# 🔱 Bataillon des Marins-Pompiers de Marseille
 
 Site web dédié au Bataillon des Marins-Pompiers de Marseille (BMPM). Ce site met en avant les missions, les valeurs et le recrutement du Bataillon, tout en proposant un formulaire d’intégration et des informations sur la protection civile de la ville de Marseille et de son littoral.
 
