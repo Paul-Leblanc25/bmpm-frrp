@@ -64,6 +64,32 @@
     footer .wrap { flex-wrap: wrap; justify-content: space-between }
     footer a { color: var(--muted) }
   </style>
+  <style>
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .wrap{padding:12px 16px}
+      nav.mpm-nav ul{gap:14px}
+      .top-banner{height:360px}
+    }
+    @media (max-width: 768px) {
+      .wrap{flex-wrap:wrap;gap:12px}
+      .mpm-left,.mpm-center,.mpm-right{width:100%;justify-content:center}
+      .mpm-left{order:1}
+      .mpm-center{order:2}
+      .mpm-right{order:3}
+      nav.mpm-nav ul{flex-wrap:wrap;justify-content:center;gap:12px;padding:8px 16px}
+      .top-banner{height:260px;margin:16px auto}
+      .hero{padding:16px}
+      .hero h1{font-size:clamp(22px,6vw,32px)}
+      .hero p{font-size:16px;line-height:1.6}
+      footer{padding:18px}
+    }
+    @media (max-width: 480px) {
+      .wrap{padding:10px 12px}
+      nav.mpm-nav ul{gap:10px;padding:8px 12px}
+      .top-banner{height:180px}
+    }
+  </style>
 </head>
 <body>
   <header class="mpm-header">
