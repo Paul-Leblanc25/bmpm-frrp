@@ -73,22 +73,8 @@
       .card:hover .thumb{transform:none; filter:none}
     }
 
-    /* Admin panel (caché par défaut) */
-    .admin{margin-top:16px;padding:16px;border:1px dashed rgba(212,175,55,0.35);border-radius:12px;background:rgba(255,255,255,0.04)}
-    .admin h2{margin:0 0 10px;font-size:18px}
-    .admin .row{display:flex;flex-wrap:wrap;gap:10px}
-    .admin input,.admin select{padding:8px 10px;border-radius:8px;border:1px solid var(--gold);background:var(--bg1);color:var(--white)}
-    .admin select{appearance:none;-webkit-appearance:none;-moz-appearance:none;background-color:var(--bg1);color:var(--white)}
-    .admin select:focus{outline:2px solid rgba(212,175,55,0.6);box-shadow:0 0 0 3px rgba(212,175,55,0.18)}
-    .admin select option{background:var(--bg1);color:var(--white)}
+    /* Boutons génériques */
     .btn{display:inline-block;padding:10px 14px;border-radius:10px;border:1px solid rgba(212,175,55,0.35);background:linear-gradient(180deg, rgba(212,175,55,0.22), rgba(212,175,55,0.1));color:var(--white);cursor:pointer}
-    .hint{color:var(--muted);font-size:13px}
-
-    /* Modal admin (accès discret) */
-    .modal{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:none;align-items:center;justify-content:center;z-index:100}
-    .modal .panel{background:var(--glass);border:1px solid rgba(212,175,55,0.25);border-radius:12px;padding:16px;max-width:420px;width:90%}
-    .modal .row{display:flex;gap:10px;margin-top:10px}
-    .modal input{flex:1;padding:8px 10px;border-radius:8px;border:1px solid rgba(212,175,55,0.25);background:rgba(255,255,255,0.06);color:var(--white)}
     
     /* Footer */
     footer{margin-top:32px;padding:24px;background:rgba(30,30,30,0.9);border-top:1px solid rgba(212,175,55,0.25);color:var(--muted)}
@@ -148,16 +134,6 @@
     </ul>
   </nav>
 
-  <div class="modal" id="adminModal" aria-hidden="true">
-    <div class="panel" role="dialog" aria-modal="true" aria-labelledby="adminTitle">
-      <h2 id="adminTitle">Accès administrateur</h2>
-      <div class="row">
-        <input id="adminCodeInput" type="password" placeholder="Code administrateur" aria-label="Code administrateur" />
-        <button class="btn" id="adminSubmit">Valider</button>
-        <button class="btn" id="adminClose">Fermer</button>
-      </div>
-    </div>
-  </div>
 
   <div class="top-banner" aria-hidden="true"></div>
 
@@ -172,14 +148,7 @@
 
     <div class="grid" id="galleryGrid" aria-live="polite"></div>
 
-    <div class="admin" id="adminGate">
-      <h2>Accès administrateur</h2>
-      <div class="row">
-        <input id="adminCodePublic" type="password" placeholder="Code secret" aria-label="Code administrateur" />
-        <button class="btn" id="unlockBtnPublic">Déverrouiller</button>
-      </div>
-      <p class="hint">Saisir le code secret pour afficher le panneau d’ajout d’éléments.</p>
-    </div>
+    
 
     
   </section>
@@ -192,9 +161,7 @@
   </footer>
 
   <script>
-    const ADMIN_CODE = 'BMPM-FRRP';
     const LS_KEY = 'bmpm_gallery_items_v1';
-    const ADMIN_FLAG = 'bmpm_is_admin';
     const SEED_PHOTO_URL = 'https://i.postimg.cc/cCqWGy3g/2023-MBMP-218-A-001-035.jpg';
     let items = [];
     let currentFilter = 'photo';
@@ -296,65 +263,6 @@
       render();
     }
 
-    function openAdminModal(){
-      const m = document.getElementById('adminModal');
-      m.style.display = 'flex';
-      setTimeout(() => document.getElementById('adminCodeInput').focus(), 0);
-    }
-    function closeAdminModal(){
-      const m = document.getElementById('adminModal');
-      m.style.display = 'none';
-    }
-    function validateAdmin(){
-      const code = document.getElementById('adminCodeInput').value.trim();
-      if(code === ADMIN_CODE){
-        localStorage.setItem(ADMIN_FLAG, 'true');
-        closeAdminModal();
-        const gate = document.getElementById('adminGate');
-        if(gate) gate.style.display = 'none';
-        const panel = document.getElementById('adminPanel');
-        if(panel) panel.style.display = 'block';
-      } else {
-        alert('Code incorrect.');
-      }
-    }
-
-    function unlockAdminPublic(){
-      const code = document.getElementById('adminCodePublic').value.trim();
-      if(code === ADMIN_CODE){
-        localStorage.setItem(ADMIN_FLAG, 'true');
-        const gate = document.getElementById('adminGate');
-        if(gate) gate.style.display = 'none';
-        const panel = document.getElementById('adminPanel');
-        if(panel) panel.style.display = 'block';
-      } else {
-        alert('Code incorrect.');
-      }
-    }
-
-    function addItem(){
-      const type = document.getElementById('itemType').value;
-      const title = document.getElementById('itemTitle').value.trim();
-      const url = document.getElementById('itemUrl').value.trim();
-      const thumb = document.getElementById('itemThumb').value.trim();
-      if(!type || (!url && type !== 'vehicule')){
-        alert('Veuillez renseigner au minimum le type et l’URL.');
-        return;
-      }
-      items.push({ id: Date.now(), type, title, url, thumb, createdAt: new Date().toISOString() });
-      saveItems();
-      render();
-      document.getElementById('itemTitle').value = '';
-      document.getElementById('itemUrl').value = '';
-      document.getElementById('itemThumb').value = '';
-      selectFilter(type);
-    }
-
-    function clearAll(){
-      if(confirm('Confirmer la suppression locale de tous les éléments ?')){
-        items = []; saveItems(); render();
-      }
-    }
 
     document.addEventListener('DOMContentLoaded', () => {
       loadItems();
@@ -362,32 +270,6 @@
       ensureSeedTitle();
       render();
       document.querySelectorAll('.chip').forEach(ch => ch.addEventListener('click', () => selectFilter(ch.dataset.filter)));
-      const addBtn = document.getElementById('addBtn');
-      if(addBtn) addBtn.addEventListener('click', addItem);
-      const clearBtn = document.getElementById('clearBtn');
-      if(clearBtn) clearBtn.addEventListener('click', clearAll);
-      document.getElementById('unlockBtnPublic').addEventListener('click', unlockAdminPublic);
-
-      // Accès admin discret: Ctrl+Shift+A ou ?admin=1
-      window.addEventListener('keydown', (e) => {
-        if(e.ctrlKey && e.shiftKey && (e.key === 'A' || e.key === 'a')){
-          openAdminModal();
-        }
-      });
-      const params = new URLSearchParams(location.search);
-      if(params.get('admin') === '1'){ openAdminModal(); }
-      document.getElementById('adminSubmit').addEventListener('click', validateAdmin);
-      document.getElementById('adminClose').addEventListener('click', closeAdminModal);
-      const adminOn = localStorage.getItem(ADMIN_FLAG) === 'true';
-      const gate = document.getElementById('adminGate');
-      const panel = document.getElementById('adminPanel');
-      if(adminOn){
-        if(gate) gate.style.display = 'none';
-        if(panel) panel.style.display = 'block';
-      } else {
-        if(gate) gate.style.display = 'block';
-        if(panel) panel.style.display = 'none';
-      }
     });
   </script>
 </body>
