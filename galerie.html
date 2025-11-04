@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Galerie — BMPM</title>
+  <style>
+    :root {
+      --bg1: #0b0b0b; --bg2: #121212; --gold: #d4af37; --white: #ffffff;
+      --glass: rgba(255,255,255,0.08); --glass-strong: rgba(255,255,255,0.14);
+      --text: #f2f2f2; --muted: #cfcfcf;
+    }
+    *{box-sizing:border-box}
+    html, body { margin:0; padding:0; }
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; color: var(--text);
+      background: radial-gradient(1000px 400px at 20% 10%, #1b1b1b 10%, var(--bg1) 40%, var(--bg2) 100%);
+      min-height:100vh; }
+    a { color: var(--text); text-decoration: none }
+    img { display:block; max-width:100%; height:auto }
+
+    /* Header (identique aux autres onglets) */
+    .mpm-header { position: sticky; top:0; z-index: 50; background: var(--glass); backdrop-filter: blur(8px); border-bottom: 1px solid rgba(212,175,55,0.25); }
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 14px 20px; display:flex; align-items:center; gap: 16px; }
+    .mpm-left, .mpm-center, .mpm-right { display:flex; align-items:center; gap:10px; }
+    .mpm-left { flex:1 }
+    .mpm-center { justify-content:center }
+    .mpm-right { gap:12px }
+    .mpm-left span { font-weight:600; letter-spacing:0.2px; text-shadow: 0 0 6px rgba(255,255,255,0.08); }
+    .mpm-logo { width:60px; height:60px; border-radius:8px; box-shadow: none; }
+    .mpm-main-logo { width:46px; height:auto; border-radius:10px; box-shadow: none; }
+    .social a { border-radius:8px; overflow:hidden; display:inline-block }
+    .social img { width:32px; height:32px }
+
+    /* Nav */
+    nav.mpm-nav { background: var(--glass-strong); backdrop-filter: blur(6px); border-bottom: 1px solid rgba(212,175,55,0.2); }
+    nav.mpm-nav ul { list-style:none; margin:0; padding:0; display:flex; gap:18px; align-items:center; max-width:1200px; margin-inline:auto; padding: 10px 20px; }
+    nav.mpm-nav > ul > li > a { padding:8px 12px; border-radius:8px; }
+    nav.mpm-nav > ul > li > a:hover { background: rgba(212,175,55,0.12); }
+
+    /* Banner */
+    .top-banner { max-width: 1200px; margin: 24px auto; height: 420px; border: 1px solid rgba(212,175,55,0.25); border-radius:14px; overflow:hidden;
+      background:
+        radial-gradient(600px 280px at 70% 30%, rgba(212,175,55,0.25), transparent 60%),
+        linear-gradient(135deg, rgba(212,175,55,0.12), rgba(255,255,255,0.04) 60%),
+        repeating-linear-gradient(45deg, rgba(255,255,255,0.06) 0 6px, rgba(255,255,255,0.02) 6px 12px),
+        url('https://i.postimg.cc/Vs40wK6X/couv-BMPM-5895599a-7984-434e-ba35-8822396475db-1.webp');
+      background-size: cover; background-position: center 52%; background-repeat: no-repeat; }
+
+    /* Section */
+    .section{max-width:1200px;margin:24px auto;padding:24px;background:var(--glass);border:1px solid rgba(212,175,55,0.25);border-radius:16px}
+    .section h1{margin:0 0 12px;font-size:clamp(24px,4vw,36px);color:var(--white)}
+    .section p{color:var(--muted);line-height:1.6}
+
+    /* Filtres & grille */
+    .filters{display:flex;gap:8px;margin-top:6px}
+    .chip{padding:8px 12px;border-radius:999px;border:1px solid rgba(212,175,55,0.35);background:linear-gradient(180deg, rgba(212,175,55,0.22), rgba(212,175,55,0.1));color:var(--white);cursor:pointer}
+    .chip[aria-selected="true"]{background:rgba(212,175,55,0.35)}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin-top:16px}
+    .card{position:relative;border-radius:14px;overflow:hidden;border:1px solid rgba(212,175,55,0.25);background:rgba(255,255,255,0.04)}
+    .card .thumb{aspect-ratio:16/9;background:#111;background-size:cover;background-position:center}
+    .card .content{padding:10px}
+    .card .title{font-weight:600}
+    .badge{position:absolute;top:8px;left:8px;background:rgba(212,175,55,0.8);color:#151515;padding:6px 10px;border-radius:999px;font-size:12px;font-weight:700}
+
+    /* Admin panel (caché par défaut) */
+    .admin{margin-top:16px;padding:16px;border:1px dashed rgba(212,175,55,0.35);border-radius:12px;background:rgba(255,255,255,0.04)}
+    .admin h2{margin:0 0 10px;font-size:18px}
+    .admin .row{display:flex;flex-wrap:wrap;gap:10px}
+    .admin input,.admin select{padding:8px 10px;border-radius:8px;border:1px solid var(--gold);background:var(--bg1);color:var(--white)}
+    .admin select{appearance:none;-webkit-appearance:none;-moz-appearance:none;background-color:var(--bg1);color:var(--white)}
+    .admin select:focus{outline:2px solid rgba(212,175,55,0.6);box-shadow:0 0 0 3px rgba(212,175,55,0.18)}
+    .admin select option{background:var(--bg1);color:var(--white)}
+    .btn{display:inline-block;padding:10px 14px;border-radius:10px;border:1px solid rgba(212,175,55,0.35);background:linear-gradient(180deg, rgba(212,175,55,0.22), rgba(212,175,55,0.1));color:var(--white);cursor:pointer}
+    .hint{color:var(--muted);font-size:13px}
+
+    /* Modal admin (accès discret) */
+    .modal{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:none;align-items:center;justify-content:center;z-index:100}
+    .modal .panel{background:var(--glass);border:1px solid rgba(212,175,55,0.25);border-radius:12px;padding:16px;max-width:420px;width:90%}
+    .modal .row{display:flex;gap:10px;margin-top:10px}
+    .modal input{flex:1;padding:8px 10px;border-radius:8px;border:1px solid rgba(212,175,55,0.25);background:rgba(255,255,255,0.06);color:var(--white)}
+  </style>
+</head>
+<body>
+  <header class="mpm-header">
+    <div class="wrap">
+      <div class="mpm-left">
+        <a href="accueil.html"><img class="mpm-logo" src="https://i.postimg.cc/QNyHFRJq/Logo-BMPM.jpg" alt="Logo BMPM"></a>
+        <span>Marins-Pompiers de Marseille</span>
+      </div>
+      <div class="mpm-center">
+        <a href="accueil.html"><img class="mpm-main-logo" src="https://i.postimg.cc/JzG0V9nM/Logo-18-112.png" alt="Logo 18 112"></a>
+      </div>
+      <div class="mpm-right social">
+        <a href="https://www.facebook.com/BataillonMarinsPompiersMarseille" target="_blank" rel="noopener noreferrer"><img src="https://i.postimg.cc/d0BnK8Ts/telechargement-1.png" alt="Facebook"></a>
+        <a href="https://www.instagram.com/marinspompiers/" target="_blank" rel="noopener noreferrer"><img src="https://i.postimg.cc/fbRVtZpK/10900021.png" alt="Instagram"></a>
+        <a href="https://x.com/marinspompiers" target="_blank" rel="noopener noreferrer"><img src="https://i.postimg.cc/htq4xgzb/nouvelle-conception-icone-x-du-logo-twitter-2023-1017-45418.avif" alt="X"></a>
+        <a href="https://discord.gg/23hbfxa4Gb" target="_blank" rel="noopener noreferrer"><img src="https://i.postimg.cc/tRhd0dQn/discord-logo-discord-logo-transparent-discord-icon-transparent-free-free-png.webp" alt="Discord"></a>
+      </div>
+    </div>
+  </header>
+
+  <nav class="mpm-nav">
+    <ul>
+      <li><a href="accueil.html">Accueil</a></li>
+      <li><a href="recrutement.html">Recrutement</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="galerie.html">Galerie</a></li>
+    </ul>
+  </nav>
+
+  <div class="modal" id="adminModal" aria-hidden="true">
+    <div class="panel" role="dialog" aria-modal="true" aria-labelledby="adminTitle">
+      <h2 id="adminTitle">Accès administrateur</h2>
+      <div class="row">
+        <input id="adminCodeInput" type="password" placeholder="Code administrateur" aria-label="Code administrateur" />
+        <button class="btn" id="adminSubmit">Valider</button>
+        <button class="btn" id="adminClose">Fermer</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="top-banner" aria-hidden="true"></div>
+
+  <section class="section">
+    <h1>Galerie</h1>
+    <p>Photos d’interventions, vidéos de démonstration, et flotte de véhicules. Admins peuvent ajouter des éléments avec le <strong>code secret</strong>.</p>
+
+    <div class="filters" role="tablist" aria-label="Filtres de la galerie">
+      <button class="chip" role="tab" aria-selected="true" data-filter="photo">Photos</button>
+      <button class="chip" role="tab" aria-selected="false" data-filter="video">Vidéos</button>
+    </div>
+
+    <div class="grid" id="galleryGrid" aria-live="polite"></div>
+
+    <div class="admin" id="adminGate">
+      <h2>Accès administrateur</h2>
+      <div class="row">
+        <input id="adminCodePublic" type="password" placeholder="Code secret" aria-label="Code administrateur" />
+        <button class="btn" id="unlockBtnPublic">Déverrouiller</button>
+      </div>
+      <p class="hint">Saisir le code secret pour afficher le panneau d’ajout d’éléments.</p>
+    </div>
+
+    <div class="admin" id="adminPanel" style="display:none">
+      <h2>Ajouter un élément à la galerie</h2>
+      <div class="row" style="margin-bottom:8px">
+        <select id="itemType" aria-label="Type d’élément">
+          <option value="photo">Photo</option>
+          <option value="video">Vidéo</option>
+        </select>
+        <input id="itemTitle" type="text" placeholder="Titre" aria-label="Titre" />
+        <input id="itemUrl" type="url" placeholder="URL image / vidéo (YouTube, MP4, etc.)" aria-label="URL" />
+        <input id="itemThumb" type="url" placeholder="Miniature (optionnel)" aria-label="Miniature" />
+        <button class="btn" id="addBtn">Ajouter</button>
+        <button class="btn" id="clearBtn" title="Vider la galerie locale">Vider (local)</button>
+      </div>
+      <p class="hint">Les éléments sont stockés en local (navigateur). Pour un stockage serveur, il faudra un backend.</p>
+    </div>
+  </section>
+
+  <script>
+    const ADMIN_CODE = 'BMPM-FRRP';
+    const LS_KEY = 'bmpm_gallery_items_v1';
+    const ADMIN_FLAG = 'bmpm_is_admin';
+    let items = [];
+    let currentFilter = 'photo';
+
+    function loadItems(){
+      try{ items = JSON.parse(localStorage.getItem(LS_KEY) || '[]') || []; }
+      catch(e){ items = []; }
+    }
+    function saveItems(){ localStorage.setItem(LS_KEY, JSON.stringify(items)); }
+
+    function toEmbedUrl(url){
+      if(!url) return '';
+      try{
+        const u = new URL(url);
+        if(u.hostname.includes('youtube.com')){
+          const v = u.searchParams.get('v');
+          return v ? `https://www.youtube.com/embed/${v}` : url;
+        }
+        if(u.hostname.includes('youtu.be')){
+          const id = u.pathname.slice(1);
+          return `https://www.youtube.com/embed/${id}`;
+        }
+      }catch(e){ /* pass */ }
+      return url;
+    }
+
+    function render(){
+      const grid = document.getElementById('galleryGrid');
+      grid.innerHTML = '';
+      const filtered = items.filter(it => it.type === currentFilter);
+      for(const it of filtered){
+        const card = document.createElement('div');
+        card.className = 'card';
+
+        const badge = document.createElement('div');
+        badge.className = 'badge';
+        badge.textContent = it.type === 'vehicule' ? 'VÉHICULE' : (it.type === 'video' ? 'VIDÉO' : 'PHOTO');
+        card.appendChild(badge);
+
+        if(it.type === 'video'){
+          const iframe = document.createElement('iframe');
+          iframe.className = 'thumb';
+          iframe.src = toEmbedUrl(it.url);
+          iframe.title = it.title || 'Vidéo';
+          iframe.frameBorder = '0';
+          iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+          iframe.allowFullscreen = true;
+          card.appendChild(iframe);
+        } else {
+          const div = document.createElement('div');
+          div.className = 'thumb';
+          const bg = (it.thumb || it.url || '').trim();
+          if(bg) div.style.backgroundImage = `url('${bg}')`;
+          card.appendChild(div);
+        }
+
+        const content = document.createElement('div');
+        content.className = 'content';
+        const title = document.createElement('div');
+        title.className = 'title';
+        title.textContent = it.title || (it.type === 'vehicule' ? 'Véhicule' : (it.type === 'video' ? 'Vidéo' : 'Photo'));
+        content.appendChild(title);
+        card.appendChild(content);
+        grid.appendChild(card);
+      }
+    }
+
+    function selectFilter(type){
+      currentFilter = type;
+      document.querySelectorAll('.chip').forEach(ch => {
+        ch.setAttribute('aria-selected', ch.dataset.filter === type ? 'true' : 'false');
+      });
+      render();
+    }
+
+    function openAdminModal(){
+      const m = document.getElementById('adminModal');
+      m.style.display = 'flex';
+      setTimeout(() => document.getElementById('adminCodeInput').focus(), 0);
+    }
+    function closeAdminModal(){
+      const m = document.getElementById('adminModal');
+      m.style.display = 'none';
+    }
+    function validateAdmin(){
+      const code = document.getElementById('adminCodeInput').value.trim();
+      if(code === ADMIN_CODE){
+        localStorage.setItem(ADMIN_FLAG, 'true');
+        closeAdminModal();
+        document.getElementById('adminGate').style.display = 'none';
+        document.getElementById('adminPanel').style.display = 'block';
+      } else {
+        alert('Code incorrect.');
+      }
+    }
+
+    function unlockAdminPublic(){
+      const code = document.getElementById('adminCodePublic').value.trim();
+      if(code === ADMIN_CODE){
+        localStorage.setItem(ADMIN_FLAG, 'true');
+        document.getElementById('adminGate').style.display = 'none';
+        document.getElementById('adminPanel').style.display = 'block';
+      } else {
+        alert('Code incorrect.');
+      }
+    }
+
+    function addItem(){
+      const type = document.getElementById('itemType').value;
+      const title = document.getElementById('itemTitle').value.trim();
+      const url = document.getElementById('itemUrl').value.trim();
+      const thumb = document.getElementById('itemThumb').value.trim();
+      if(!type || (!url && type !== 'vehicule')){
+        alert('Veuillez renseigner au minimum le type et l’URL.');
+        return;
+      }
+      items.push({ id: Date.now(), type, title, url, thumb, createdAt: new Date().toISOString() });
+      saveItems();
+      render();
+      document.getElementById('itemTitle').value = '';
+      document.getElementById('itemUrl').value = '';
+      document.getElementById('itemThumb').value = '';
+      selectFilter(type);
+    }
+
+    function clearAll(){
+      if(confirm('Confirmer la suppression locale de tous les éléments ?')){
+        items = []; saveItems(); render();
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadItems();
+      render();
+      document.querySelectorAll('.chip').forEach(ch => ch.addEventListener('click', () => selectFilter(ch.dataset.filter)));
+      document.getElementById('addBtn').addEventListener('click', addItem);
+      document.getElementById('clearBtn').addEventListener('click', clearAll);
+      document.getElementById('unlockBtnPublic').addEventListener('click', unlockAdminPublic);
+
+      // Accès admin discret: Ctrl+Shift+A ou ?admin=1
+      window.addEventListener('keydown', (e) => {
+        if(e.ctrlKey && e.shiftKey && (e.key === 'A' || e.key === 'a')){
+          openAdminModal();
+        }
+      });
+      const params = new URLSearchParams(location.search);
+      if(params.get('admin') === '1'){ openAdminModal(); }
+      document.getElementById('adminSubmit').addEventListener('click', validateAdmin);
+      document.getElementById('adminClose').addEventListener('click', closeAdminModal);
+      if(localStorage.getItem(ADMIN_FLAG) === 'true'){
+        document.getElementById('adminGate').style.display = 'none';
+        document.getElementById('adminPanel').style.display = 'block';
+      } else {
+        document.getElementById('adminGate').style.display = 'block';
+        document.getElementById('adminPanel').style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>
