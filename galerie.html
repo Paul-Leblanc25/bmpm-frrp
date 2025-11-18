@@ -164,7 +164,7 @@
 
   <script>
     const LS_KEY = 'bmpm_gallery_items_v1';
-    const SEED_PHOTO_URL = 'https://i.postimg.cc/cCqWGy3g/2023-MBMP-218-A-001-035.jpg';
+    const SEED_PHOTO_URL = 'https://i.postimg.cc/52XRnBFZ/baniere-Neko-Bot.jpg';
     let items = [];
     let currentFilter = 'photo';
 
@@ -190,8 +190,8 @@
         let changed = false;
         for(const it of items){
           if(it.type === 'photo' && (it.url === SEED_PHOTO_URL || it.thumb === SEED_PHOTO_URL)){
-            if(it.title !== 'BMPM 2023'){
-              it.title = 'BMPM 2023';
+            if(it.title !== 'Banniere'){
+              it.title = 'Banniere';
               changed = true;
             }
           }
